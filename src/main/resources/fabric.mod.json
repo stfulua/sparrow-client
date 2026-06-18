@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "sparrow-mod",
+  "version": "${version}",
+  "name": "Sparrow Mod",
+  "description": "Lightweight client-side tweaks & performance optimizations for Sparrow Launcher.",
+  "authors": ["vProLabs"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.vprolabs.sparrow.SparrowMod"]
+  },
+  "mixins": ["sparrow.mixins.json"],
+  "accessWidener": "sparrow.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.19.2",
+    "minecraft": "1.21.11",
+    "java": ">=21"
+  }
+}

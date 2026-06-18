@@ -1,0 +1,4 @@
+accessWidener v2 named
+
+# Expose RenderLayer.of(String, RenderSetup) for custom glint layer creation
+accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;Lnet/minecraft/client/render/RenderSetup;)Lnet/minecraft/client/render/RenderLayer;

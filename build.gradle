@@ -1,0 +1,143 @@
+plugins {
+    id "fabric-loom" version "1.16.1"
+    id "maven-publish"
+}
+
+def mcVersion = findProperty("mcVersion") ?: "1.21.11"
+
+group = "com.vprolabs.sparrow"
+base.archivesName = "SparrowClient"
+
+// === Build tag system: version = #DDMMYYYYN (same as BuildInfo.BUILD_TAG) ===
+ext.counterFile = file("build_counter.properties")
+def computeTagInfo() {
+    def props = new Properties()
+    if (counterFile.exists()) {
+        counterFile.withInputStream { props.load(it) }
+    }
+    def now = new Date()
+    def cal = Calendar.instance
+    cal.time = now
+    def day = cal.get(Calendar.DAY_OF_MONTH)
+    def month = cal.get(Calendar.MONTH) + 1
+    def year = cal.get(Calendar.YEAR)
+    def todayStr = String.format("%04d-%02d-%02d", year, month, day)
+    def lastDate = props.getProperty("date", "")
+    def counter = 1
+    if (lastDate == todayStr) {
+        counter = (props.getProperty("counter", "0") as int) + 1
+    }
+    def tag = String.format("#%d%02d%04d%d", day, month, year, counter)
+    return [tag, todayStr, counter]
+}
+def tagInfo = computeTagInfo()
+version = tagInfo[0]
+
+repositories {
+    maven { url = "https://maven.fabricmc.net/" }
+    maven { url = "https://api.modrinth.com/maven" }
+    mavenCentral()
+}
+def mcMappings = "${mcVersion}+build.1:v2"
+if (mcVersion == "1.21.11") {
+    mcMappings = "1.21.11+build.5:v2"
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${mcVersion}"
+    mappings "net.fabricmc:yarn:${mcMappings}"
+    modImplementation "net.fabricmc:fabric-loader:0.19.2"
+    compileOnly "com.google.errorprone:error_prone_annotations:2.36.0"
+}
+
+def modVersion = project.version
+
+processResources {
+    inputs.property("version", modVersion)
+    filesMatching("fabric.mod.json") {
+        expand("version": modVersion)
+    }
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/sparrow.accesswidener")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-Xlint:all,-path")
+    options.deprecation = true
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${base.archivesName}" }
+    }
+}
+
+task generateBuildInfo {
+    def outputDir = layout.buildDirectory.dir("generated/java/com/vprolabs/sparrow")
+    outputs.dir(outputDir)
+    inputs.property("counterState", counterFile.exists() ? counterFile.text : "none")
+
+    doLast {
+        def props = new Properties()
+        if (counterFile.exists()) {
+            counterFile.withInputStream { props.load(it) }
+        }
+
+        def now = new Date()
+        def cal = Calendar.instance
+        cal.time = now
+        def day = cal.get(Calendar.DAY_OF_MONTH)
+        def month = cal.get(Calendar.MONTH) + 1
+        def year = cal.get(Calendar.YEAR)
+        def todayStr = String.format("%04d-%02d-%02d", year, month, day)
+
+        def lastDate = props.getProperty("date", "")
+        def counter = 1
+        if (lastDate == todayStr) {
+            counter = (props.getProperty("counter", "0") as int) + 1
+        }
+
+        props.setProperty("date", todayStr)
+        props.setProperty("counter", counter.toString())
+        counterFile.withOutputStream { props.store(it, "Build counter — do not edit manually") }
+
+        def tag = String.format("#%d%02d%04d%d", day, month, year, counter)
+
+        def dir = outputDir.get().asFile
+        dir.mkdirs()
+        def src = new File(dir, "BuildInfo.java")
+        src.text = """package com.vprolabs.sparrow;
+
+public final class BuildInfo {
+    public static final String BUILD_TAG = "${tag}";
+    public static final String BUILD_DATE = "${todayStr}";
+    public static final int BUILD_NUMBER = ${counter};
+
+    private BuildInfo() {}
+}
+"""
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir(layout.buildDirectory.dir("generated/java"))
+        }
+    }
+}
+
+tasks.named("compileJava") {
+    dependsOn("generateBuildInfo")
+}
+tasks.named("sourcesJar") {
+    dependsOn("generateBuildInfo")
+}

@@ -1,0 +1,8 @@
+build/
+build_counter.properties
+.gradle/
+.caches/
+remapped_mods/
+*.lock
+*.class
+.DS_Store
