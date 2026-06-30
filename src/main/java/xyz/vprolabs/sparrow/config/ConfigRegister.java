@@ -169,19 +169,19 @@ public final class ConfigRegister {
     // ══════════════════════════════════════════════════════════════════
 
     // ── Visual toggles ────────────────────────────────────────────────
-    public static final Toggle smallTotem       = new Toggle("small-totem", "Visual", true);
-    public static final Toggle oldPotions       = new Toggle("old-potions", "Visual", true);
-    public static final Toggle customGlint      = new Toggle("custom-glint", "Visual", true);
-    public static final Toggle fireTimer        = new Toggle("fire-timer", "Visual", true);
-    public static final Toggle noMiscOverlays   = new Toggle("no-misc-overlays", "Visual", true);
-    public static final Toggle removeShadows    = new Toggle("remove-shadows", "Visual", true);
-    public static final Toggle storageTooltip   = new Toggle("storage-tooltip", "Visual", true);
+    public static final Toggle smallTotem       = new Toggle("small-totem", "Visual", false);
+    public static final Toggle oldPotions       = new Toggle("old-potions", "Visual", false);
+    public static final Toggle customGlint      = new Toggle("custom-glint", "Visual", false);
+    public static final Toggle fireTimer        = new Toggle("fire-timer", "Visual", false);
+    public static final Toggle noMiscOverlays   = new Toggle("no-misc-overlays", "Visual", false);
+    public static final Toggle removeShadows    = new Toggle("remove-shadows", "Visual", false);
+    public static final Toggle storageTooltip   = new Toggle("storage-tooltip", "Visual", false);
     public static final Toggle coords           = new Toggle("coords", "Visual", false);
     public static final Toggle ping             = new Toggle("ping", "Visual", false);
-    public static final Toggle desync           = new Toggle("desync", "Visual", true);
-    public static final Toggle hitmarker        = new Toggle("hitmarker", "Visual", true);
-    public static final Toggle trueCooldown     = new Toggle("true-cooldown", "Visual", true);
-    public static final Toggle shieldStatus     = new Toggle("shield-status", "Visual", true);
+    public static final Toggle desync           = new Toggle("desync", "Visual", false);
+    public static final Toggle hitmarker        = new Toggle("hitmarker", "Visual", false);
+    public static final Toggle trueCooldown     = new Toggle("true-cooldown", "Visual", false);
+    public static final Toggle shieldStatus     = new Toggle("shield-status", "Visual", false);
 
     // ── Visual float/int/string settings ──────────────────────────────
     public static final SetEntry viewModelX      = new SetEntry("view-x", "Visual", 0.0f);
@@ -196,15 +196,15 @@ public final class ConfigRegister {
     public static final StringEntry particleMode = new StringEntry("particles", "Visual", "off");
 
     // ── Tweaks ────────────────────────────────────────────────────────
-    public static final Toggle clickQueue = new Toggle("click-relay", "Tweaks", true);
+    public static final Toggle clickQueue = new Toggle("click-relay", "Tweaks", false);
 
     // ── Movement ──────────────────────────────────────────────────────
-    public static final Toggle smoothElytra      = new Toggle("smooth-elytra", "Movement", true);
-    public static final Toggle betterMovement    = new Toggle("better-movement", "Movement", true);
+    public static final Toggle smoothElytra      = new Toggle("smooth-elytra", "Movement", false);
+    public static final Toggle betterMovement    = new Toggle("better-movement", "Movement", false);
 
     // ── World ─────────────────────────────────────────────────────────
-    public static final Toggle fullbright        = new Toggle("fullbright", "World", true);
-    public static final Toggle noMiningFatigue   = new Toggle("no-mining-fatigue", "World", true);
+    public static final Toggle fullbright        = new Toggle("fullbright", "World", false);
+    public static final Toggle noMiningFatigue   = new Toggle("no-mining-fatigue", "World", false);
     public static final Toggle alwaysDay         = new Toggle("always-day", "World", false);
     public static final Toggle disableEntityAI   = new Toggle("disable-entity-ai", "World", false);
     public static final IntEntry netherRenderCap = new IntEntry("nether-render-cap", "World", 6);

@@ -9,6 +9,8 @@
 
 <p>Performance client for Minecraft 1.21.11 — 40+ optimizations, 20+ bug fixes, HUD overlays, and visual enhancements.</p>
 
+⚠️ <b>Expect bugs.</b> Found one? Report on our <a href="https://discord.gg/SNzUYWbc5Q">Discord</a>.
+
 </div>
 
 ---
