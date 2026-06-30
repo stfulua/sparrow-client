@@ -182,7 +182,6 @@ public final class ConfigRegister {
     public static final Toggle hitmarker        = new Toggle("hitmarker", "Visual", false);
 
     public static final Toggle shieldStatus     = new Toggle("shield-status", "Visual", false);
-    public static final Toggle movehud          = new Toggle("movehud", "Visual", false);
 
     // ── Visual float/int/string settings ──────────────────────────────
     public static final SetEntry viewModelX      = new SetEntry("view-x", "Visual", 0.0f);
@@ -224,6 +223,9 @@ public final class ConfigRegister {
 
     // ── Console ───────────────────────────────────────────────────────
     public static final IntEntry consoleFps = new IntEntry("console-fps", "Console", 60);
+
+    // ── HUD ────────────────────────────────────────────────────────────
+    public static final IntEntry movehudKey     = new IntEntry("movehud-key", "Visual", 75); // GLFW_KEY_K
 
     private ConfigRegister() {}
 }

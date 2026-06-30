@@ -6,6 +6,11 @@ import java.util.Map;
 public class HudPositions {
     private static final Map<String, int[]> offsets = new HashMap<>();
 
+    private static final String[] KNOWN_KEYS = {
+        "coords", "ping", "desync", "fire-timer", "ghost-block", "knockback", "shield",
+        "hotbar", "status-bars", "crosshair"
+    };
+
     public static int[] getOffset(String key) {
         return offsets.getOrDefault(key, new int[]{0, 0});
     }
@@ -14,11 +19,14 @@ public class HudPositions {
         offsets.put(key, new int[]{x, y});
     }
 
+    public static void resetAll() {
+        offsets.clear();
+    }
+
     public static void loadFromMap(Map<String, Object> map) {
         offsets.clear();
         if (map == null) return;
-        String[] keys = {"coords", "ping", "desync", "fire-timer", "ghost-block", "knockback", "shield"};
-        for (String key : keys) {
+        for (String key : KNOWN_KEYS) {
             String cfgKey = key.replace('-', '_');
             Object val = map.get(cfgKey);
             if (val instanceof java.util.List) {

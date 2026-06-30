@@ -20,33 +20,36 @@ public class HudMoveMixin {
     @Unique private static final Map<String, int[]> sparrow_savedOffsets = new HashMap<>();
     @Unique private static final String[] ELEMENT_KEYS = {"coords", "ping", "desync", "fire-timer", "ghost-block", "knockback", "shield"};
 
+    public static void activateMoveHud() {
+        sparrow_savedOffsets.clear();
+        for (String key : ELEMENT_KEYS) {
+            int[] off = HudPositions.getOffset(key);
+            sparrow_savedOffsets.put(key, new int[]{off[0], off[1]});
+        }
+        HudMoveState.active = true;
+    }
+
+    @Unique private static boolean sparrow_moveKeyWasDown = false;
+
     @Inject(method = "tick", at = @At("HEAD"))
     private void onTick(CallbackInfo ci) {
-        boolean toggleOn = ConfigRegister.movehud.get();
-
-        if (toggleOn && !HudMoveState.active) {
-            sparrow_savedOffsets.clear();
-            for (String key : ELEMENT_KEYS) {
-                int[] off = HudPositions.getOffset(key);
-                sparrow_savedOffsets.put(key, new int[]{off[0], off[1]});
-            }
-            HudMoveState.active = true;
-        } else if (!toggleOn && HudMoveState.active) {
-            for (Map.Entry<String, int[]> e : sparrow_savedOffsets.entrySet()) {
-                HudPositions.setOffset(e.getKey(), e.getValue()[0], e.getValue()[1]);
-            }
-            HudMoveState.reset();
-            return;
-        }
-
-        if (!HudMoveState.active) return;
-
         MinecraftClient client = MinecraftClient.getInstance();
         long handle = client.getWindow().getHandle();
 
+        int moveKey = ConfigRegister.movehudKey.get();
+        boolean moveKeyDown = GLFW.glfwGetKey(handle, moveKey) == GLFW.GLFW_PRESS;
+
+        if (!HudMoveState.active && moveKeyDown && !sparrow_moveKeyWasDown) {
+            activateMoveHud();
+            sparrow_moveKeyWasDown = true;
+            return;
+        }
+        sparrow_moveKeyWasDown = moveKeyDown;
+
+        if (!HudMoveState.active) return;
+
         if (GLFW.glfwGetKey(handle, GLFW.GLFW_KEY_ENTER) == GLFW.GLFW_PRESS) {
             ConfigReader.saveFromCache();
-            ConfigRegister.movehud.set(false);
             HudMoveState.reset();
             return;
         }
@@ -55,7 +58,6 @@ public class HudMoveMixin {
             for (Map.Entry<String, int[]> e : sparrow_savedOffsets.entrySet()) {
                 HudPositions.setOffset(e.getKey(), e.getValue()[0], e.getValue()[1]);
             }
-            ConfigRegister.movehud.set(false);
             HudMoveState.reset();
             return;
         }

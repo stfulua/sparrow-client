@@ -1,7 +1,9 @@
 package xyz.vprolabs.sparrow.console;
 
+import org.lwjgl.glfw.GLFW;
 import xyz.vprolabs.sparrow.config.ConfigReader;
 import xyz.vprolabs.sparrow.config.ConfigRegister;
+import xyz.vprolabs.sparrow.state.HudPositions;
 import xyz.vprolabs.sparrow.state.ToggleSneakState;
 import xyz.vprolabs.sparrow.tweaks.SparrowGlintLayers;
 import java.util.ArrayList;
@@ -121,7 +123,7 @@ public final class FeatureRegistry {
 			"view-x", "view-y", "view-z", "view-size", "utility-scale",
 			"zoom", "zoom-smoothness", "zoom-min", "zoom-max",
 			"fire-timer", "fire-timer-pos",
-			"particles", "block-lod-mode"
+			"particles", "block-lod-mode", "movehud"
 		);
 
 		for (ConfigRegister.Entry e : ConfigRegister.getAll()) {
@@ -150,6 +152,7 @@ public final class FeatureRegistry {
 		registerParticlesCmd();
 		registerBlockLodCmd();
 		registerSneakCmd();
+		registerMoveHudCmd();
 	}
 
 	// ── console-fps (needs SparrowConsoleState.consoleFps sync) ────────
@@ -498,6 +501,57 @@ public final class FeatureRegistry {
 		});
 	}
 
+	// ── movehud ────────────────────────────────────────────────────────
+
+	private static void registerMoveHudCmd() {
+		SparrowConsoleCommand.register("movehud", new SparrowConsoleCommand.Command() {
+			@Override public String execute(String[] args) {
+				if (args.length < 2) {
+					xyz.vprolabs.sparrow.mixin.UI.HUD.HudMoveMixin.activateMoveHud();
+					return "\u00a77movehud: \u00a7aMove mode activated. Drag elements. ENTER to save, ESC to discard.";
+				}
+				String sub = args[1].toLowerCase(Locale.ROOT);
+				switch (sub) {
+				case "reset":
+					HudPositions.resetAll();
+					save();
+					return "\u00a77movehud: \u00a7aAll HUD positions reset to default.";
+				case "key":
+					if (args.length < 3) {
+						int cur = ConfigRegister.movehudKey.get();
+						String keyName = GLFW.glfwGetKeyName(cur, 0);
+						return "\u00a77movehud key: \u00a7f" + (keyName != null ? keyName : String.valueOf(cur))
+							+ " \u00a77(default: K)";
+					}
+					{
+						String name = args[2].toUpperCase(Locale.ROOT);
+						int code = -1;
+						try { code = Integer.parseInt(name); } catch (NumberFormatException ignored) {}
+						String glfwConst = "GLFW_KEY_" + name;
+						try {
+							code = GLFW.class.getField(glfwConst).getInt(null);
+						} catch (Exception e) {
+							if (code == -1) return "\u00a7cUnknown key: " + name + ". Use GLFW key name (e.g. K, L, F6) or key code.";
+						}
+						ConfigRegister.movehudKey.set(code);
+						save();
+						return "\u00a77movehud key: \u00a7f" + name + " (" + code + ")";
+					}
+				default:
+					xyz.vprolabs.sparrow.mixin.UI.HUD.HudMoveMixin.activateMoveHud();
+					return "\u00a77movehud: \u00a7aMove mode activated. Drag elements. ENTER to save, ESC to discard.";
+				}
+			}
+			@Override public String getDescription() { return "Open HUD move GUI / reset / set keybind"; }
+			@Override public List<String> tabComplete(String[] args) {
+				if (args.length == 2) return Arrays.asList("reset", "key");
+				if (args.length == 3 && args[1].equalsIgnoreCase("key"))
+					return Arrays.asList("K", "L", "M", "N", "F6", "F7", "GRAVE_ACCENT");
+				return Collections.emptyList();
+			}
+		});
+	}
+
 	// ── FeatureItem list (for 'list' command display) ──────────────────
 
 	static {
@@ -518,5 +572,7 @@ public final class FeatureRegistry {
 		}
 		addFeature("sneak", "Movement",
 			() -> ToggleSneakState.enabled ? "\u00a7aON" : "\u00a7cOFF");
+		addFeature("movehud", "Visual",
+			() -> "\u00a77Action");
 	}
 }
