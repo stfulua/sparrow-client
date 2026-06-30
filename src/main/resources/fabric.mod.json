@@ -3,12 +3,19 @@
   "id": "sparrow-mod",
   "version": "${version}",
   "name": "Sparrow Client",
-  "description": "Performance-first Minecraft client engineered for competitive PvP — low-latency optimizations, visual enhancements, and quality-of-life improvements.",
+  "description": "Just be better. This mod will help you gain skill.",
   "authors": ["vProLabs"],
+  "contributors": {
+    "v4bi": "Developer"
+  },
   "contact": {
+    "homepage": "https://www.vprolabs.xyz/sparrow-client/",
+    "sources": "https://github.com/stfulua/sparrow-client",
+    "issues": "https://discord.gg/SNzUYWbc5Q",
     "discord": "https://discord.gg/SNzUYWbc5Q"
   },
-  "license": "vProLabs General License — https://www.vprolabs.xyz/projects/license/raw/",
+  "license": "GPL-3.0-only",
+  "icon": "assets/sparrow-mod/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": ["xyz.vprolabs.sparrow.SparrowMod"]
@@ -19,5 +26,14 @@
     "fabricloader": ">=0.19.2",
     "minecraft": "1.21.11",
     "java": ">=21"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/SNzUYWbc5Q",
+        "modmenu.github": "https://github.com/stfulua/sparrow-client",
+        "modmenu.kofi": "https://ko-fi.com/v4bi"
+      }
+    }
   }
 }

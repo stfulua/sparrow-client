@@ -57,7 +57,22 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs.add("-Xlint:all")
     options.deprecation = true
 }
-jar { from("LICENSE") { rename { "${it}_${base.archivesName}" } } }
+jar {
+    from("LICENSE") { rename { "${it}_${base.archivesName}" } }
+    manifest {
+        attributes(
+            'Implementation-Title':       'Sparrow Client',
+            'Implementation-Version':      tagInfo[0],
+            'Implementation-Vendor':       'vProLabs',
+            'Built-By':                    'vProLabs',
+            'Build-Tag':                   tagInfo[0],
+            'Build-Date':                  tagInfo[1],
+            'Build-Jdk':                   System.getProperty('java.version'),
+            'Created-By':                  "Gradle ${gradle.gradleVersion}",
+            'Automatic-Module-Name':       'xyz.vprolabs.sparrow'
+        )
+    }
+}
 
 task generateBuildInfo {
     def outputDir = layout.buildDirectory.dir("generated/java/xyz/vprolabs/sparrow")
