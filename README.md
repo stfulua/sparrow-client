@@ -214,7 +214,7 @@ gradle build                          # full build (ProGuard obfuscation)
 gradle build -PdevMode=true           # dev build (no obfuscation, fast)
 ```
 
-Output: `client/build/libs/SparrowClient-<date>.jar`
+Output: `client/build/libs/SparrowClient-Fabric-1.21.11.jar`
 
 ---
 

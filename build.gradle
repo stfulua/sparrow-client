@@ -25,7 +25,7 @@ def computeTagInfo() {
     return [tag, todayStr, counter]
 }
 def tagInfo = computeTagInfo()
-version = tagInfo[0]
+version = "Fabric-1.21.11"
 
 repositories {
     maven { url = "https://maven.fabricmc.net/" }
