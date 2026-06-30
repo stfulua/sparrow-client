@@ -12,23 +12,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(MinecraftClient.class)
 public class HudMoveMixin {
-    @Unique private static final Map<String, int[]> sparrow_savedOffsets = new HashMap<>();
-    @Unique private static final String[] ELEMENT_KEYS = {"coords", "ping", "desync", "fire-timer", "ghost-block", "knockback", "shield"};
-
-    public static void activateMoveHud() {
-        sparrow_savedOffsets.clear();
-        for (String key : ELEMENT_KEYS) {
-            int[] off = HudPositions.getOffset(key);
-            sparrow_savedOffsets.put(key, new int[]{off[0], off[1]});
-        }
-        HudMoveState.active = true;
-    }
-
     @Unique private static boolean sparrow_moveKeyWasDown = false;
 
     @Inject(method = "tick", at = @At("HEAD"))
@@ -40,7 +27,7 @@ public class HudMoveMixin {
         boolean moveKeyDown = GLFW.glfwGetKey(handle, moveKey) == GLFW.GLFW_PRESS;
 
         if (!HudMoveState.active && moveKeyDown && !sparrow_moveKeyWasDown) {
-            activateMoveHud();
+            HudMoveState.activate();
             sparrow_moveKeyWasDown = true;
             return;
         }
@@ -55,7 +42,7 @@ public class HudMoveMixin {
         }
 
         if (GLFW.glfwGetKey(handle, GLFW.GLFW_KEY_ESCAPE) == GLFW.GLFW_PRESS) {
-            for (Map.Entry<String, int[]> e : sparrow_savedOffsets.entrySet()) {
+            for (Map.Entry<String, int[]> e : HudMoveState.savedOffsets.entrySet()) {
                 HudPositions.setOffset(e.getKey(), e.getValue()[0], e.getValue()[1]);
             }
             HudMoveState.reset();

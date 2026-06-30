@@ -18,6 +18,7 @@ public final class HudState {
         lastFireTicks = -1;
         lastFireText = null;
         lastFireWidth = 0;
+        logged = false;
     }
 
     // ── CooldownResetState ───────────────────────────────────────────

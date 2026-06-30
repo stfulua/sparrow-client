@@ -12,6 +12,18 @@ public class HudMoveState {
     public static boolean wasMouseDown = false;
     public static final Map<String, int[]> elementBounds = new HashMap<>();
 
+    public static final Map<String, int[]> savedOffsets = new HashMap<>();
+    public static final String[] ELEMENT_KEYS = {"coords", "ping", "desync", "fire-timer", "ghost-block", "knockback", "shield"};
+
+    public static void activate() {
+        savedOffsets.clear();
+        for (String key : ELEMENT_KEYS) {
+            int[] off = HudPositions.getOffset(key);
+            savedOffsets.put(key, new int[]{off[0], off[1]});
+        }
+        active = true;
+    }
+
     public static void reset() {
         active = false;
         selectedElement = null;

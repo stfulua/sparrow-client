@@ -507,7 +507,7 @@ public final class FeatureRegistry {
 		SparrowConsoleCommand.register("movehud", new SparrowConsoleCommand.Command() {
 			@Override public String execute(String[] args) {
 				if (args.length < 2) {
-					xyz.vprolabs.sparrow.mixin.UI.HUD.HudMoveMixin.activateMoveHud();
+						xyz.vprolabs.sparrow.state.HudMoveState.activate();
 					return "\u00a77movehud: \u00a7aMove mode activated. Drag elements. ENTER to save, ESC to discard.";
 				}
 				String sub = args[1].toLowerCase(Locale.ROOT);
@@ -538,7 +538,7 @@ public final class FeatureRegistry {
 						return "\u00a77movehud key: \u00a7f" + name + " (" + code + ")";
 					}
 				default:
-					xyz.vprolabs.sparrow.mixin.UI.HUD.HudMoveMixin.activateMoveHud();
+						xyz.vprolabs.sparrow.state.HudMoveState.activate();
 					return "\u00a77movehud: \u00a7aMove mode activated. Drag elements. ENTER to save, ESC to discard.";
 				}
 			}

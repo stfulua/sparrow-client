@@ -27,7 +27,7 @@ public final class FireTimerRenderer {
         int displayBucket = ticks / 2;
         if (displayBucket != HudState.lastFireTicks / 2 || HudState.lastFireText == null) {
             HudState.lastFireTicks = ticks;
-            HudState.lastFireText = String.format("\uD83D\uDD25 Fire: %.1fs", ticks / 20.0f);
+            HudState.lastFireText = String.format("\u00a7c\u00a7l!FIRE!\u00a7r %.1fs", ticks / 20.0f);
             HudState.lastFireWidth = font.getWidth(HudState.lastFireText);
         }
 
