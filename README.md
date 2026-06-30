@@ -3,7 +3,7 @@
 # Sparrow Client
 
 [![Version](https://img.shields.io/badge/Version-#3006202616-24b47e)](https://github.com/stfulua/sparrow-client)
-[![License](https://img.shields.io/badge/License-vProLabs%20General%20License-blue)](https://www.vprolabs.xyz/projects/license/raw)
+[![License](https://img.shields.io/badge/License-GPLv3-blue)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Java](https://img.shields.io/badge/Java-21-orange)](https://www.oracle.com/java/)
 [![Platform](https://img.shields.io/badge/Platform-Fabric%201.21.11-red)](https://fabricmc.net)
 
@@ -130,10 +130,8 @@
 <details open>
 <summary><b>🛡️ Privacy</b></summary>
 
-- **Client Brand Spoof** — custom client brand string.
 - **Telemetry Killer** — blocks all telemetry transmission to Mojang.
 - **Telemetry Log Disable** — prevents telemetry log file creation.
-- **Window Title** — custom window title string.
 
 </details>
 
@@ -141,16 +139,26 @@
 
 ### Console Commands
 
-Press **`/`** (right shift) in-game to open the Sparrow console.
+Press **Right Shift** in-game to open the Sparrow console. Type any feature name to toggle it. No prefix needed.
 
 | Command | Description |
 |---------|-------------|
-| `sparrow toggle <feature>` | Enable/disable a boolean feature |
-| `sparrow set <feature> <value>` | Set a numeric or string feature value |
-| `sparrow list [category]` | List all features or filter by category |
-| `sparrow <feature> --help` | Show help for a specific feature |
+| `coords` | Toggle coordinate display |
+| `ping` | Toggle ping display |
+| `desync` | Toggle desync detection |
+| `hitmarker` | Toggle hit marker |
+| `fire-timer` | Toggle fire timer / set position (`on\|off\|pos`) |
+| `particles` | Set particle mode (`off\|minimal\|on`) |
+| `block-lod` | Set block LOD mode (`off\|low\|pvp\|aggressive`) |
+| `sneak` | Toggle sneak |
+| `glint` | Custom glint (`on\|off\|r\|g\|b <0-255>`) |
+| `view` | View model (`x\|y\|z\|size\|utility-scale <value>`) |
+| `zoom` | Zoom (`<level>\|smoothness\|min\|max <value>`) |
+| `help` | Show commands help |
+| `list` | List all features with current values |
+| `clear` | Clear console output |
 
-All features use kebab-case names (`smooth-elytra`, `custom-glint`, `fire-timer-pos`).
+Most toggles accept `on` / `off` as argument. Omitting the argument flips the current value.
 
 ---
 
@@ -218,12 +226,15 @@ Output: `client/build/libs/SparrowClient-<date>.jar`
 
 ### License
 
-This project is licensed under the **vProLabs General License**.
+This project is licensed under the **GNU General Public License v3.0** (GPL v3).
 
-- Non-Commercial Use Only
-- Attribution Required
-- Share Alike
-- [View Full License](https://www.vprolabs.xyz/projects/license/raw)
+- You may use, modify, and distribute this software.
+- Using Sparrow Client in videos, streams, or recordings (monetized or not) is allowed.
+- Modified versions must be distributed under the same license.
+- Source code changes must be disclosed.
+- No warranty or liability.
+
+[View Full License](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 ---
 
