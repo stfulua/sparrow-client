@@ -5,9 +5,7 @@
   "name": "Sparrow Client",
   "description": "Just be better. This mod will help you gain skill.",
   "authors": ["vProLabs"],
-  "contributors": {
-    "v4bi": "Developer"
-  },
+  "contributors": ["v4bi"],
   "contact": {
     "homepage": "https://www.vprolabs.xyz/sparrow-client/",
     "sources": "https://github.com/stfulua/sparrow-client",
