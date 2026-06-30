@@ -58,6 +58,7 @@ public class ConfigReader {
             }
         }
         ConfigRegister.loadFromMap(map);
+        xyz.vprolabs.sparrow.state.HudPositions.loadFromMap(map);
         INSTANCE = new ConfigReader(missing);
         if (missing) INSTANCE.save();
         return INSTANCE;
@@ -72,6 +73,7 @@ public class ConfigReader {
         Map<String, Object> map = new HashMap<>();
         map.put("version", "1");
         ConfigRegister.putToMap(map);
+        xyz.vprolabs.sparrow.state.HudPositions.putToMap(map);
         try (FileWriter writer = new FileWriter(cfgFile, StandardCharsets.UTF_8)) {
             PRETTY_GSON.toJson(map, writer);
             SparrowLogger.info("Config saved to: " + cfgFile.getAbsolutePath());

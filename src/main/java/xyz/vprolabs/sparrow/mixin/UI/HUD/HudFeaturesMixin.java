@@ -1,6 +1,8 @@
 package xyz.vprolabs.sparrow.mixin.UI.HUD;
 
+import xyz.vprolabs.sparrow.state.HudMoveState;
 import xyz.vprolabs.sparrow.state.HudState;
+import xyz.vprolabs.sparrow.tweaks.HudHelper;
 import xyz.vprolabs.sparrow.tweaks.HudRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -34,5 +36,14 @@ public class HudFeaturesMixin {
     @Inject(method = "render", at = @At("TAIL"))
     private void onRenderHudFeatures(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         HudRenderer.render(context, MinecraftClient.getInstance().textRenderer);
+
+        if (HudMoveState.active) {
+            HudMoveState.elementBounds.forEach((key, bounds) -> {
+                int x = bounds[0], y = bounds[1], w = bounds[2], h = bounds[3];
+                int color = key.equals(HudMoveState.selectedElement)
+                    ? 0xFFFFFF00 : 0xFFFFFFFF;
+                HudHelper.drawBorder(context, x, y, w, h, color);
+            });
+        }
     }
 }

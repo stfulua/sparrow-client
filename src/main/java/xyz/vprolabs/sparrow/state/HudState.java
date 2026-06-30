@@ -20,15 +20,6 @@ public final class HudState {
         lastFireWidth = 0;
     }
 
-    // ── CooldownState ────────────────────────────────────────────────
-    public static float trueCooldownProgress = 1.0f;
-
-    public static void update(int ticksSinceAttack, int maxTicks) {
-        if (maxTicks > 0) {
-            trueCooldownProgress = Math.min(1.0f, (float) ticksSinceAttack / maxTicks);
-        }
-    }
-
     // ── CooldownResetState ───────────────────────────────────────────
     public static boolean cooldownWasReset = false;
     public static long resetTime = 0;

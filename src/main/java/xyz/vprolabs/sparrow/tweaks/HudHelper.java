@@ -34,4 +34,12 @@ public final class HudHelper {
         }
         return tw;
     }
+
+    /** Draw a colored border around a rectangle for move-mode highlight */
+    public static void drawBorder(DrawContext ctx, int x, int y, int w, int h, int color) {
+        ctx.fill(x - 2, y - 2, x + w + 2, y, color);       // top
+        ctx.fill(x - 2, y + h, x + w + 2, y + h + 2, color); // bottom
+        ctx.fill(x - 2, y - 2, x, y + h + 2, color);         // left
+        ctx.fill(x + w, y - 2, x + w + 2, y + h + 2, color); // right
+    }
 }

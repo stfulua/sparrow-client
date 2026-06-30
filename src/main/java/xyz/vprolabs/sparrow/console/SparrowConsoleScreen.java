@@ -110,6 +110,10 @@ public class SparrowConsoleScreen extends Screen {
 		// ── Separator ──────────────────────────────────────────
 		context.fill(outX, sepY, panelX + panelW - PAD, sepY + 1, DIM);
 
+		// ── Cap scrollOffset so PageUp overflow doesn't orphan us ──
+		int maxOff = Math.max(0, lines.size() - vis);
+		if (SparrowConsoleState.scrollOffset > maxOff) SparrowConsoleState.scrollOffset = maxOff;
+
 		// ── Output lines ──
 		int start  = Math.max(0, lines.size() - vis - SparrowConsoleState.scrollOffset);
 		int end    = Math.min(lines.size(), start + vis);

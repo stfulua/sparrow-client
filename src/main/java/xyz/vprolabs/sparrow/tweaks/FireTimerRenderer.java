@@ -12,6 +12,8 @@ package xyz.vprolabs.sparrow.tweaks;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import xyz.vprolabs.sparrow.config.ConfigRegister;
+import xyz.vprolabs.sparrow.state.HudMoveState;
+import xyz.vprolabs.sparrow.state.HudPositions;
 import xyz.vprolabs.sparrow.state.HudState;
 
 public final class FireTimerRenderer {
@@ -53,6 +55,15 @@ public final class FireTimerRenderer {
         }
         if (y < 5) {
             y = 5;
+        }
+
+        int[] off = HudPositions.getOffset("fire-timer");
+        x += off[0];
+        y += off[1];
+
+        if (HudMoveState.active) {
+            HudMoveState.elementBounds.put("fire-timer", new int[]{x, y, textWidth + 2, textHeight + 2});
+            HudHelper.drawBorder(context, x - 1, y - 1, textWidth + 2, textHeight + 2, 0xFFFFFFFF);
         }
 
         HudHelper.drawBoxedText(context, font, text, x, y, BG_COLOR, TEXT_COLOR);

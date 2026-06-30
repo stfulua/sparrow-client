@@ -7,3 +7,4 @@ remapped_mods/
 *.class
 .DS_Store
 archived/
+push-website.sh

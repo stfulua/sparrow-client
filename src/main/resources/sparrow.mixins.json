@@ -103,9 +103,9 @@
     "UI.HUD.HudFeaturesMixin",
     "UI.HUD.ShieldTrackerMixin",
     "UI.HUD.ShieldChargeMixin",
+    "UI.HUD.HudMoveMixin",
     "UI.HUD.SwapCooldownHudMixin",
-    "UI.HUD.TrueCooldownHudMixin",
-    "UI.HUD.TrueCooldownTrackerMixin",
+
     "visual.ui.StorageTooltipMixin",
     "Console.SparrowConsoleKeyMixin"
   ],

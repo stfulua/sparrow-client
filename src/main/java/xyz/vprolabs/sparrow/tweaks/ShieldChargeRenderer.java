@@ -1,6 +1,8 @@
 package xyz.vprolabs.sparrow.tweaks;
 
 import net.minecraft.client.gui.DrawContext;
+import xyz.vprolabs.sparrow.state.HudMoveState;
+import xyz.vprolabs.sparrow.state.HudPositions;
 import xyz.vprolabs.sparrow.state.HudState;
 
 public final class ShieldChargeRenderer {
@@ -31,6 +33,14 @@ public final class ShieldChargeRenderer {
         // Bottom-center, just above hotbar
         int x = (w - SIZE) / 2;
         int y = h - 46;
+        int[] off = HudPositions.getOffset("shield");
+        x += off[0];
+        y += off[1];
+
+        if (HudMoveState.active) {
+            HudMoveState.elementBounds.put("shield", new int[]{x, y, SIZE, SIZE});
+            HudHelper.drawBorder(ctx, x, y, SIZE, SIZE, 0xFFFFFFFF);
+        }
 
         int a = (int) (alpha * 255);
         if (a < 0) a = 0;

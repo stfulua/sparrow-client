@@ -3,6 +3,8 @@ package xyz.vprolabs.sparrow.tweaks;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import xyz.vprolabs.sparrow.state.GhostBlockState;
+import xyz.vprolabs.sparrow.state.HudMoveState;
+import xyz.vprolabs.sparrow.state.HudPositions;
 
 public final class GhostBlockRenderer {
     private static final int TEXT_COLOR = 0xFFFF4444;
@@ -20,6 +22,13 @@ public final class GhostBlockRenderer {
         int tw = font.getWidth(text);
         if (labelW < 0) labelW = tw;
 
-        HudHelper.drawBoxedText(ctx, font, text, 5, 5, BG_COLOR, TEXT_COLOR);
+        int[] off = HudPositions.getOffset("ghost-block");
+        int x = 5 + off[0];
+        int y = 5 + off[1];
+        if (HudMoveState.active) {
+            HudMoveState.elementBounds.put("ghost-block", new int[]{x, y, tw + 2, font.fontHeight + 2});
+            HudHelper.drawBorder(ctx, x - 1, y - 1, tw + 2, font.fontHeight + 2, 0xFFFFFFFF);
+        }
+        HudHelper.drawBoxedText(ctx, font, text, x, y, BG_COLOR, TEXT_COLOR);
     }
 }

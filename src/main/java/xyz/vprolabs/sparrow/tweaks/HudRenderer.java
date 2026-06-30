@@ -5,6 +5,8 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import xyz.vprolabs.sparrow.config.ConfigRegister;
 import xyz.vprolabs.sparrow.state.GhostBlockState;
+import xyz.vprolabs.sparrow.state.HudMoveState;
+import xyz.vprolabs.sparrow.state.HudPositions;
 import xyz.vprolabs.sparrow.state.HudState;
 
 public final class HudRenderer {
@@ -17,6 +19,11 @@ public final class HudRenderer {
     private static int pingW = -1;
 
     private HudRenderer() {}
+
+    private static int[] addOffset(String key, int x, int y) {
+        int[] off = HudPositions.getOffset(key);
+        return new int[]{x + off[0], y + off[1]};
+    }
 
     public static void render(DrawContext ctx, TextRenderer font) {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -32,8 +39,13 @@ public final class HudRenderer {
         if (ConfigRegister.coords.get()) {
             String text = String.format("XYZ: %.0f / %.0f / %.0f",
                 client.player.getX(), client.player.getY(), client.player.getZ());
-            int x = PADDING;
-            int y = scaledH - 55;
+            int[] pos = addOffset("coords", PADDING, scaledH - 55);
+            int x = pos[0], y = pos[1];
+            int tw = font.getWidth(text);
+            if (HudMoveState.active) {
+                HudMoveState.elementBounds.put("coords", new int[]{x, y, tw + 2, font.fontHeight + 2});
+                HudHelper.drawBorder(ctx, x - 1, y - 1, tw + 2, font.fontHeight + 2, 0xFFFFFFFF);
+            }
             HudHelper.drawBoxedText(ctx, font, text, x, y, BG_COLOR, TEXT_COLOR);
         }
 
@@ -42,8 +54,12 @@ public final class HudRenderer {
             String text = "Ping: " + HudState.currentPing + "ms";
             int tw = font.getWidth(text);
             if (pingW < 0) pingW = tw;
-            int x = scaledW - tw - PADDING - 1;
-            int y = PADDING;
+            int[] pos = addOffset("ping", scaledW - tw - PADDING - 1, PADDING);
+            int x = pos[0], y = pos[1];
+            if (HudMoveState.active) {
+                HudMoveState.elementBounds.put("ping", new int[]{x, y, tw + 2, font.fontHeight + 2});
+                HudHelper.drawBorder(ctx, x - 1, y - 1, tw + 2, font.fontHeight + 2, 0xFFFFFFFF);
+            }
             HudHelper.drawBoxedText(ctx, font, text, x, y, BG_COLOR, TEXT_COLOR);
         }
 
@@ -53,8 +69,12 @@ public final class HudRenderer {
             if (elapsed < HudState.DESYNC_HIDE_DURATION) {
                 String text = "\u00a7c\u26a0 Desync detected!";
                 if (desyncWarnW < 0) desyncWarnW = font.getWidth(text);
-                int x = (scaledW - desyncWarnW) / 2;
-                int y = scaledH / 2 - 70;
+                int[] pos = addOffset("desync", (scaledW - desyncWarnW) / 2, scaledH / 2 - 70);
+                int x = pos[0], y = pos[1];
+                if (HudMoveState.active) {
+                    HudMoveState.elementBounds.put("desync", new int[]{x, y, desyncWarnW + 2, font.fontHeight + 2});
+                    HudHelper.drawBorder(ctx, x - 1, y - 1, desyncWarnW + 2, font.fontHeight + 2, 0xFFFFFFFF);
+                }
                 HudHelper.drawBoxedText(ctx, font, text, x, y, BG_COLOR, WARN_COLOR);
             }
         }

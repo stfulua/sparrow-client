@@ -170,7 +170,7 @@ Most toggles accept `on` / `off` as argument. Omitting the argument flips the cu
 <summary><b>View configurable features</b></summary>
 
 **Visual toggles** (13):
-`small-totem`, `old-potions`, `custom-glint`, `fire-timer`, `no-misc-overlays`, `remove-shadows`, `storage-tooltip`, `coords`, `ping`, `desync`, `hitmarker`, `true-cooldown`, `shield-status`
+`small-totem`, `old-potions`, `custom-glint`, `fire-timer`, `no-misc-overlays`, `remove-shadows`, `storage-tooltip`, `coords`, `ping`, `desync`, `hitmarker`, `shield-status`
 
 **Visual settings** (11):
 `view-x`, `view-y`, `view-z`, `view-size`, `utility-scale`, `glint-r`, `glint-g`, `glint-b`, `fire-timer-pos`, `particles`, `block-lod-mode`

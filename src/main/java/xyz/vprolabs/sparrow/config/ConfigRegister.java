@@ -180,8 +180,9 @@ public final class ConfigRegister {
     public static final Toggle ping             = new Toggle("ping", "Visual", false);
     public static final Toggle desync           = new Toggle("desync", "Visual", false);
     public static final Toggle hitmarker        = new Toggle("hitmarker", "Visual", false);
-    public static final Toggle trueCooldown     = new Toggle("true-cooldown", "Visual", false);
+
     public static final Toggle shieldStatus     = new Toggle("shield-status", "Visual", false);
+    public static final Toggle movehud          = new Toggle("movehud", "Visual", false);
 
     // ── Visual float/int/string settings ──────────────────────────────
     public static final SetEntry viewModelX      = new SetEntry("view-x", "Visual", 0.0f);
