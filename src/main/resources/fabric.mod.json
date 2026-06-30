@@ -2,14 +2,16 @@
   "schemaVersion": 1,
   "id": "sparrow-mod",
   "version": "${version}",
-  "name": "Sparrow Mod",
-  "description": "Lightweight client-side tweaks & performance optimizations for Sparrow Launcher.",
+  "name": "Sparrow Client",
+  "description": "Performance-first Minecraft client engineered for competitive PvP — low-latency optimizations, visual enhancements, and quality-of-life improvements.",
   "authors": ["vProLabs"],
-  "contact": {},
-  "license": "MIT",
+  "contact": {
+    "discord": "https://discord.gg/SNzUYWbc5Q"
+  },
+  "license": "vProLabs General License — https://www.vprolabs.xyz/projects/license/raw/",
   "environment": "client",
   "entrypoints": {
-    "client": ["com.vprolabs.sparrow.SparrowMod"]
+    "client": ["xyz.vprolabs.sparrow.SparrowMod"]
   },
   "mixins": ["sparrow.mixins.json"],
   "accessWidener": "sparrow.accesswidener",

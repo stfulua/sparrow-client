@@ -6,3 +6,4 @@ remapped_mods/
 *.lock
 *.class
 .DS_Store
+archived/

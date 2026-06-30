@@ -3,30 +3,24 @@ plugins {
     id "maven-publish"
 }
 
-def mcVersion = findProperty("mcVersion") ?: "1.21.11"
+configurations { proguard }
 
-group = "com.vprolabs.sparrow"
+def mcVersion = findProperty("mcVersion") ?: "1.21.11"
+group = "xyz.vprolabs.sparrow"
 base.archivesName = "SparrowClient"
 
-// === Build tag system: version = #DDMMYYYYN (same as BuildInfo.BUILD_TAG) ===
 ext.counterFile = file("build_counter.properties")
 def computeTagInfo() {
     def props = new Properties()
-    if (counterFile.exists()) {
-        counterFile.withInputStream { props.load(it) }
-    }
-    def now = new Date()
-    def cal = Calendar.instance
-    cal.time = now
+    if (counterFile.exists()) counterFile.withInputStream { props.load(it) }
+    def now = new Date(); def cal = Calendar.instance; cal.time = now
     def day = cal.get(Calendar.DAY_OF_MONTH)
     def month = cal.get(Calendar.MONTH) + 1
     def year = cal.get(Calendar.YEAR)
     def todayStr = String.format("%04d-%02d-%02d", year, month, day)
     def lastDate = props.getProperty("date", "")
     def counter = 1
-    if (lastDate == todayStr) {
-        counter = (props.getProperty("counter", "0") as int) + 1
-    }
+    if (lastDate == todayStr) counter = (props.getProperty("counter", "0") as int) + 1
     def tag = String.format("#%d%02d%04d%d", day, month, year, counter)
     return [tag, todayStr, counter]
 }
@@ -38,106 +32,96 @@ repositories {
     maven { url = "https://api.modrinth.com/maven" }
     mavenCentral()
 }
-def mcMappings = "${mcVersion}+build.1:v2"
-if (mcVersion == "1.21.11") {
-    mcMappings = "1.21.11+build.5:v2"
-}
+def mcMappings = mcVersion == "1.21.11" ? "1.21.11+build.5:v2" : "${mcVersion}+build.1:v2"
 
 dependencies {
     minecraft "com.mojang:minecraft:${mcVersion}"
     mappings "net.fabricmc:yarn:${mcMappings}"
     modImplementation "net.fabricmc:fabric-loader:0.19.2"
     compileOnly "com.google.errorprone:error_prone_annotations:2.36.0"
+    proguard 'com.guardsquare:proguard-base:7.6.1'
 }
-
-def modVersion = project.version
 
 processResources {
-    inputs.property("version", modVersion)
-    filesMatching("fabric.mod.json") {
-        expand("version": modVersion)
-    }
+    def ver = project.version
+    inputs.property("version", ver)
+    filesMatching("fabric.mod.json") { expand("version": ver) }
 }
-
-loom {
-    accessWidenerPath = file("src/main/resources/sparrow.accesswidener")
-}
-
+loom { accessWidenerPath = file("src/main/resources/sparrow.accesswidener") }
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
-    withSourcesJar()
-}
 
+}
 tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs.add("-Xlint:all,-path")
+    options.compilerArgs.add("-Xlint:all")
     options.deprecation = true
 }
-
-jar {
-    from("LICENSE") {
-        rename { "${it}_${base.archivesName}" }
-    }
-}
+jar { from("LICENSE") { rename { "${it}_${base.archivesName}" } } }
 
 task generateBuildInfo {
-    def outputDir = layout.buildDirectory.dir("generated/java/com/vprolabs/sparrow")
+    def outputDir = layout.buildDirectory.dir("generated/java/xyz/vprolabs/sparrow")
     outputs.dir(outputDir)
     inputs.property("counterState", counterFile.exists() ? counterFile.text : "none")
-
     doLast {
+        def (tag2, todayStr2, counter2) = computeTagInfo()
         def props = new Properties()
-        if (counterFile.exists()) {
-            counterFile.withInputStream { props.load(it) }
-        }
-
-        def now = new Date()
-        def cal = Calendar.instance
-        cal.time = now
-        def day = cal.get(Calendar.DAY_OF_MONTH)
-        def month = cal.get(Calendar.MONTH) + 1
-        def year = cal.get(Calendar.YEAR)
-        def todayStr = String.format("%04d-%02d-%02d", year, month, day)
-
-        def lastDate = props.getProperty("date", "")
-        def counter = 1
-        if (lastDate == todayStr) {
-            counter = (props.getProperty("counter", "0") as int) + 1
-        }
-
-        props.setProperty("date", todayStr)
-        props.setProperty("counter", counter.toString())
-        counterFile.withOutputStream { props.store(it, "Build counter — do not edit manually") }
-
-        def tag = String.format("#%d%02d%04d%d", day, month, year, counter)
-
-        def dir = outputDir.get().asFile
-        dir.mkdirs()
+        if (counterFile.exists()) counterFile.withInputStream { props.load(it) }
+        props.setProperty("date", todayStr2)
+        props.setProperty("counter", counter2.toString())
+        counterFile.withOutputStream { props.store(it, "Build counter") }
+        def dir = outputDir.get().asFile; dir.mkdirs()
         def src = new File(dir, "BuildInfo.java")
-        src.text = """package com.vprolabs.sparrow;
-
+        src.text = """package xyz.vprolabs.sparrow;
 public final class BuildInfo {
-    public static final String BUILD_TAG = "${tag}";
-    public static final String BUILD_DATE = "${todayStr}";
-    public static final int BUILD_NUMBER = ${counter};
-
+    public static final String BUILD_TAG = "${tag2}";
+    public static final String BUILD_DATE = "${todayStr2}";
+    public static final int BUILD_NUMBER = ${counter2};
     private BuildInfo() {}
-}
-"""
+}"""
     }
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir(layout.buildDirectory.dir("generated/java"))
-        }
-    }
+sourceSets { main { java { srcDir(layout.buildDirectory.dir("generated/java")) } } }
+tasks.named("compileJava") { dependsOn("generateBuildInfo") }
+
+// ── PROTECTION LAYERS ────────────────────────────────────
+def isDev = project.findProperty("devMode") == "true"
+
+task obfuscate(type: JavaExec) {
+    onlyIf { !isDev }
+    dependsOn remapJar
+    def inJar  = remapJar.archiveFile.get().asFile.path
+    def tmpJar = inJar.replace('.jar', '-pg-tmp.jar')
+    classpath configurations.proguard
+    mainClass = 'proguard.ProGuard'
+    args = ['-injars', inJar, '-outjars', tmpJar,
+        '-dontshrink', '-dontoptimize', '-dontwarn', '-ignorewarnings',
+        '-keepattributes', 'Exceptions,InnerClasses,Signature,Deprecated',
+        '-keepattributes', 'SourceFile,LineNumberTable,StackMapTable,*Annotation*',
+        '-overloadaggressively', '-useuniqueclassmembernames',
+        '-flattenpackagehierarchy', 'x', '-repackageclasses', 'x',
+
+        // ── KEEP rules ─────────────────────────────────
+        '-keep', 'class xyz.vprolabs.sparrow.mixin.** { *; }',
+        '-keep', 'public class xyz.vprolabs.sparrow.SparrowMod { *; }',
+        '-keep', 'class xyz.vprolabs.sparrow.plugin.** { *; }',
+        // Logging: WarnMixin must NOT be renamed (causes JVM SIGSEGV on render init)
+        '-keep', 'class xyz.vprolabs.sparrow.logging.** { *; }',
+        // Config: needed for mod initialization
+        '-keep', 'class xyz.vprolabs.sparrow.config.** { *; }',
+        // Console: SparrowConsoleScreen overrides Screen.render/Background — ProGuard
+        // renames them (Il/lI), breaking polymorphism. Screen.renderWithTooltip() (final)
+        // calls this.renderBackground()/this.render() which fall through to vanilla
+        // (blur + empty drawables). Keep console package to preserve method names.
+        '-keep', 'class xyz.vprolabs.sparrow.console.** { *; }',
+
+        '-printmapping', "${buildDir}/obf-mapping-${version}.txt",
+    ]
+    doLast {
+        delete(inJar)
+        file(tmpJar).renameTo(file(inJar))
+        println ">>> Obfuscated: ${inJar}" }
 }
 
-tasks.named("compileJava") {
-    dependsOn("generateBuildInfo")
-}
-tasks.named("sourcesJar") {
-    dependsOn("generateBuildInfo")
-}
+build.dependsOn obfuscate
