@@ -8,3 +8,4 @@ remapped_mods/
 .DS_Store
 archived/
 push-website.sh
+release.sh
