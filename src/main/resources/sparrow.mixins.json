@@ -21,7 +21,6 @@
     "Bugfix.ShieldDesyncFixMixin",
     "Bugfix.KnockbackPredictorMixin",
     "Bugfix.PacketErrorIgnoreMixin",
-    "IllegalVanilla.PortalGuiUnlockMixin",
     "Optimization.Bloat.GoalSelectorBloatMixin",
     "Tweaks.BetterMovementMixin",
     "Tweaks.ClickQueueMixin",
