@@ -21,7 +21,7 @@ def computeTagInfo() {
     def lastDate = props.getProperty("date", "")
     def counter = 1
     if (lastDate == todayStr) counter = (props.getProperty("counter", "0") as int) + 1
-    def tag = String.format("#%d%02d%04d%d", day, month, year, counter)
+    def tag = String.format("%04d%02d%02d%d", year, month, day, counter)
     return [tag, todayStr, counter]
 }
 def tagInfo = computeTagInfo()
