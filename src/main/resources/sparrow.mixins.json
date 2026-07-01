@@ -104,6 +104,7 @@
     "UI.HUD.ShieldChargeMixin",
     "UI.HUD.HudMoveMixin",
     "UI.HUD.SwapCooldownHudMixin",
+    "UI.VideoOptionsScreenMixin",
 
     "visual.ui.StorageTooltipMixin",
     "Console.SparrowConsoleKeyMixin"
