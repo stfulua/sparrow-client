@@ -208,7 +208,7 @@ public final class ConfigRegister {
     public static final Toggle alwaysDay         = new Toggle("always-day", "World", false);
     public static final Toggle disableEntityAI   = new Toggle("disable-entity-ai", "World", false);
     public static final IntEntry netherRenderCap = new IntEntry("nether-render-cap", "World", 6);
-    public static final StringEntry blockLodMode = new StringEntry("block-lod-mode", "Optimization", "PVP");
+    public static final StringEntry blockLodMode = new StringEntry("block-lod-mode", "Optimization", "OFF");
 
     // ── Camera ────────────────────────────────────────────────────────
     public static final SetEntry zoomLevel        = new SetEntry("zoom", "Camera", 4.0f);

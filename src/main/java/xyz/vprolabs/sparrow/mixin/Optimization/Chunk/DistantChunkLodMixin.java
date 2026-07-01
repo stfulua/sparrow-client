@@ -58,6 +58,7 @@ public class DistantChunkLodMixin {
 	@Unique private static final int AGGRESSIVE_CULL    = 48;
 
 	@Unique private static boolean sparrow_lodLogged = false;
+	@Unique private static boolean sparrow_cullLogged = false;
 
 	// ── Inject 1: translucency sort cancel ──────────────────────────
 
@@ -88,7 +89,13 @@ public class DistantChunkLodMixin {
 	@Inject(method = "scheduleChunkRender(IIIZ)V", at = @At("HEAD"), cancellable = true)
 	private void sparrow_cullDistantChunk(int x, int y, int z, boolean important, CallbackInfo ci) {
 		int renderCull = getRenderCullBlocks();
-		if (renderCull <= 0) return;
+		if (renderCull <= 0) {
+			if (!sparrow_cullLogged) {
+				sparrow_cullLogged = true;
+				SparrowLogger.debug("DistantChunkLodMixin: cull disabled (mode=" + ConfigRegister.blockLodMode.get() + ")");
+			}
+			return;
+		}
 
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (client.player == null) return;
@@ -101,6 +108,11 @@ public class DistantChunkLodMixin {
 		double dx = cx - client.player.getX();
 		double dz = cz - client.player.getZ();
 		double distSq = dx * dx + dz * dz;
+
+		if (!sparrow_cullLogged) {
+			sparrow_cullLogged = true;
+			SparrowLogger.debug("DistantChunkLodMixin: active, cull=" + renderCull + " blocks, mode=" + ConfigRegister.blockLodMode.get());
+		}
 
 		if (distSq >= (double) renderCull * renderCull) {
 			ci.cancel();

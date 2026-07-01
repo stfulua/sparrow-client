@@ -3,7 +3,6 @@ package xyz.vprolabs.sparrow.mixin.UI;
 import xyz.vprolabs.sparrow.logging.SparrowLogger;
 import xyz.vprolabs.sparrow.mixin.Utils.SimpleOptionAccessor;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.screen.option.VideoOptionsScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
