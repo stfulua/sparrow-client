@@ -3,8 +3,6 @@ plugins {
     id "maven-publish"
 }
 
-configurations { proguard }
-
 def mcVersion = findProperty("mcVersion") ?: "1.21.11"
 group = "xyz.vprolabs.sparrow"
 base.archivesName = "SparrowClient"
@@ -39,7 +37,6 @@ dependencies {
     mappings "net.fabricmc:yarn:${mcMappings}"
     modImplementation "net.fabricmc:fabric-loader:0.19.2"
     compileOnly "com.google.errorprone:error_prone_annotations:2.36.0"
-    proguard 'com.guardsquare:proguard-base:7.6.1'
 }
 
 processResources {
@@ -99,48 +96,3 @@ public final class BuildInfo {
 
 sourceSets { main { java { srcDir(layout.buildDirectory.dir("generated/java")) } } }
 tasks.named("compileJava") { dependsOn("generateBuildInfo") }
-
-// ── PROTECTION LAYERS ────────────────────────────────────
-def isDev = project.findProperty("devMode") == "true"
-
-task obfuscate(type: JavaExec) {
-    onlyIf { !isDev }
-    dependsOn remapJar
-    def inJar  = remapJar.archiveFile.get().asFile.path
-    def tmpJar = inJar.replace('.jar', '-pg-tmp.jar')
-    classpath configurations.proguard
-    mainClass = 'proguard.ProGuard'
-    args = ['-injars', inJar, '-outjars', tmpJar,
-        '-dontshrink', '-dontoptimize', '-dontwarn', '-ignorewarnings',
-        '-keepattributes', 'Exceptions,InnerClasses,Signature,Deprecated',
-        '-keepattributes', 'SourceFile,LineNumberTable,StackMapTable,*Annotation*',
-        '-overloadaggressively', '-useuniqueclassmembernames',
-        '-flattenpackagehierarchy', 'x', '-repackageclasses', 'x',
-
-        // ── KEEP rules ─────────────────────────────────
-        '-keep', 'class xyz.vprolabs.sparrow.mixin.** { *; }',
-        '-keep', 'public class xyz.vprolabs.sparrow.SparrowMod { *; }',
-        '-keep', 'class xyz.vprolabs.sparrow.plugin.** { *; }',
-        // Logging: WarnMixin must NOT be renamed (causes JVM SIGSEGV on render init)
-        '-keep', 'class xyz.vprolabs.sparrow.logging.** { *; }',
-        // Config: needed for mod initialization
-        '-keep', 'class xyz.vprolabs.sparrow.config.** { *; }',
-        // Console: SparrowConsoleScreen overrides Screen.render/Background — ProGuard
-        // renames them (Il/lI), breaking polymorphism. Screen.renderWithTooltip() (final)
-        // calls this.renderBackground()/this.render() which fall through to vanilla
-        // (blur + empty drawables). Keep console package to preserve method names.
-        '-keep', 'class xyz.vprolabs.sparrow.console.** { *; }',
-        // Tweaks: AlphaVertexConsumer implements VertexConsumer. ProGuard -useuniqueclassmembernames
-        // renames its methods (vertex/color/... -> a/b) so the JVM can't dispatch invokeinterface
-        // class_4588.method_22912 at runtime -> AbstractMethodError in FluidRenderer.
-        '-keep', 'class xyz.vprolabs.sparrow.tweaks.** { *; }',
-
-        '-printmapping', "${buildDir}/obf-mapping-${version}.txt",
-    ]
-    doLast {
-        delete(inJar)
-        file(tmpJar).renameTo(file(inJar))
-        println ">>> Obfuscated: ${inJar}" }
-}
-
-build.dependsOn obfuscate
