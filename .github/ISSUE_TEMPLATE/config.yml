@@ -1,0 +1,7 @@
+contact_links:
+  - name: Discord (faster help)
+    url: https://discord.gg/SNzUYWbc5Q
+    about: Live community support — usually faster than GitHub issues.
+  - name: vProLabs website
+    url: https://www.vprolabs.xyz
+    about: Project homepage, features, and download links.

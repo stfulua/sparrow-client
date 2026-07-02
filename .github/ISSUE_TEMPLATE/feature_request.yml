@@ -1,0 +1,101 @@
+name: Feature Request
+description: Suggest a new feature, mixin, or improvement to Sparrow Client.
+title: "[FEATURE] "
+labels: ["enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      content: |
+        Suggest a new feature for Sparrow Client. Be specific about what
+        you want and (if possible) how it should behave. If you can
+        describe the user-facing impact, that helps prioritize.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: Which area does the feature belong to?
+      options:
+        - HUD / visual overlay
+        - Bug fix / vanilla parity
+        - Performance optimization
+        - Movement / physics
+        - Render / culling
+        - Console / config system
+        - Utility / QoL
+        - Other (describe below)
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or motivation
+      description: What problem does this solve, or what limitation does it remove? "I want X because Y."
+      placeholder: |
+        When I PvP, the hunger bar fog effect (vignette blur at low
+        saturation) makes it hard to see distant players. I'd like a
+        toggle to remove just the hunger vignette.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you implement or expect this to work? What does the user see, click, or configure?
+      placeholder: |
+        Add a console command `sparrow toggle no-hunger-vignette` that
+        removes the vignette when saturation drops below a threshold.
+        Default OFF.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other approaches did you think about? Why is this one better?
+    validations:
+      required: false
+
+  - type: dropdown
+    id: ban-risk
+    attributes:
+      label: Ban risk
+      description: Could this feature be detected by anti-cheat on public servers? Choose the most accurate answer.
+      options:
+        - No risk — purely client-side render or input timing
+        - Low risk — sends unusual packets but not flagged
+        - Medium risk — sends packets other clients cannot normally send
+        - High risk — game-mechanic bypass that will trigger anti-cheat
+        - Unknown / I don't know
+      default: 0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: toggleable
+    attributes:
+      label: Should it be toggleable?
+      description: Most Sparrow features have a console toggle (`sparrow toggle <feature>`). Should this one?
+      options:
+        - Yes, default OFF (recommended for visual / behavior changes)
+        - Yes, default ON (recommended for bug fixes)
+        - Always ON, no toggle (bug fix / vanilla parity only)
+        - I don't have a preference
+      default: 0
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission checklist
+      options:
+        - label: I searched existing issues and didn't find this request
+          required: true
+        - label: I'm willing to test a draft build (if applicable)
+          required: false

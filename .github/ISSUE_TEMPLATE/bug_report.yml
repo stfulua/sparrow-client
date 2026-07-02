@@ -1,0 +1,159 @@
+name: Bug Report
+description: Report a crash, broken behavior, or unexpected result.
+title: "[BUG] "
+labels: ["bug"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      content: |
+        Thanks for taking the time to file a bug. Please fill out the template
+        below — the more detail you provide, the faster we can reproduce and fix it.
+
+  - type: input
+    id: build-tag
+    attributes:
+      label: Build tag
+      description: Check `sparrow_client.log` or the in-game version display (e.g. `2026070210`). Get it from the latest release tag if you can't reach the game.
+      placeholder: "2026070210"
+    validations:
+      required: true
+
+  - type: input
+    id: mc-version
+    attributes:
+      label: Minecraft version
+      description: "e.g. 1.21.11"
+      placeholder: "1.21.11"
+    validations:
+      required: true
+
+  - type: input
+    id: mod-loader
+    attributes:
+      label: Mod loader
+      description: "Fabric Loader version (e.g. 0.19.2). If you launched via the official launcher or another launcher, name it."
+      placeholder: "Fabric Loader 0.19.2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: launcher
+    attributes:
+      label: Launcher
+      description: Which launcher did you use?
+      options:
+        - Sparrow Launcher
+        - Official Minecraft Launcher
+        - MultiMC
+        - Prism Launcher
+        - Other (specify in description)
+      default: 0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: crash-type
+    attributes:
+      label: Crash type
+      description: What kind of failure did you see?
+      options:
+        - Game won't launch (exit before title screen)
+        - Game crashes during play (JVM exit 255)
+        - Mixin apply failure (red text at startup)
+        - Game runs but feature is broken
+        - Game runs but no error
+        - Performance issue
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the bug. What did you expect to happen, and what actually happened?
+      placeholder: |
+        I dropped a stack of diamonds and the items flickered in and out
+        of existence every tick, making them barely visible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Numbered list of actions that trigger the bug. 1) ..., 2) ..., 3) ...
+      placeholder: |
+        1. Join eu.catpvp.xyz
+        2. Go to /warp pvp
+        3. Drop a stack of diamonds
+        4. Walk back ~10 blocks
+        5. Look at the dropped items
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Paste the relevant `latest.log` excerpt, the `crash-reports/*.txt` file, or any error text from the console. Use a code block (```` ``` ````) to preserve formatting. If the file is large, attach it instead of pasting inline.
+      placeholder: |
+        ```
+        [hh:mm:ss] [main/INFO]: ...
+        [hh:mm:ss] [Render thread/ERROR]: ...
+        ```
+    validations:
+      required: false
+
+  - type: input
+    id: server
+    attributes:
+      label: Server (if any)
+      description: Server address and brand. Leave empty for singleplayer.
+      placeholder: "eu.catpvp.xyz (uwuPaper / Velocity)"
+    validations:
+      required: false
+
+  - type: input
+    id: other-mods
+    attributes:
+      label: Other installed mods
+      description: List any other mods you have installed alongside Sparrow. Empty = none.
+      placeholder: "Sodium 0.6.0, Iris 1.8.0, ..."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: bisect
+    attributes:
+      label: Reproducible without other mods?
+      description: Does the bug still happen if you remove all other mods and only keep Sparrow?
+      options:
+        - Unknown / not tested
+        - Yes, reproduces with only Sparrow installed
+        - No, does not reproduce with only Sparrow installed
+        - I can't test this (other mods are required for the bug)
+      default: 0
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission checklist
+      options:
+        - label: I checked the existing issues to make sure this hasn't been reported
+          required: true
+        - label: I attached the relevant log/crash file (if applicable)
+          required: false
+        - label: I tested with only Sparrow installed (or noted that I can't)
+          required: false

@@ -1,0 +1,96 @@
+name: Mixin / Build Failure
+description: A mixin failed to apply, the build is broken, or a class can't be found at runtime.
+title: "[BUILD/MIXIN] "
+labels: ["build", "mixin"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      content: |
+        Use this template for issues with the build pipeline, mixin application
+        errors, or class-loading failures. If the game is crashing for an unrelated
+        reason, file a normal Bug Report instead.
+
+  - type: input
+    id: build-tag
+    attributes:
+      label: Build tag
+      description: The build tag shown in the in-game version display or `sparrow_client.log`.
+      placeholder: "2026070210"
+    validations:
+      required: true
+
+  - type: input
+    id: mc-version
+    attributes:
+      label: Minecraft version
+      placeholder: "1.21.11"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: failure-kind
+    attributes:
+      label: Failure type
+      description: What exactly is broken?
+      options:
+        - Mixin apply failed at game launch (red text, JVM exits)
+        - "VerifyError" / "InvalidInjectionException" at runtime
+        - "ClassNotFoundException" for a Sparrow class
+        - "AbstractMethodError" at runtime
+        - Build itself fails (gradle error)
+        - Loom remap warning during build
+        - Other build pipeline issue
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error output
+      description: Paste the full stack trace / error message. Use a code block. Attach the full `latest.log` if it's long.
+      placeholder: |
+        ```
+        [hh:mm:ss] [main/ERROR]: Mixin apply for mod sparrow-mod failed
+        org.spongepowered.asm.mixin.transformer.throwables.InvalidInjectionException
+          ...
+        ```
+    validations:
+      required: true
+
+  - type: dropdown
+    id: build-type
+    attributes:
+      label: How did you build?
+      description: Which build command produced the JAR?
+      options:
+        - "launcher/setup.sh (default, with ProGuard)"
+        - "launcher/setup.sh --dev (no ProGuard)"
+        - "gradle build" directly
+        - I downloaded a release JAR from GitHub
+        - I downloaded a release JAR from the website
+        - I don't know
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: What commands did you run? What sequence triggers the error?
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission checklist
+      options:
+        - label: I tried a fresh build (deleted `client/build/` and ran `setup.sh` again)
+          required: true
+        - label: I attached the full `latest.log` (not just the error line)
+          required: true
+        - label: I attached the build output (`gradle build` stdout/stderr) if relevant
+          required: false
