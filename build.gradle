@@ -130,6 +130,10 @@ task obfuscate(type: JavaExec) {
         // calls this.renderBackground()/this.render() which fall through to vanilla
         // (blur + empty drawables). Keep console package to preserve method names.
         '-keep', 'class xyz.vprolabs.sparrow.console.** { *; }',
+        // Tweaks: AlphaVertexConsumer implements VertexConsumer. ProGuard -useuniqueclassmembernames
+        // renames its methods (vertex/color/... -> a/b) so the JVM can't dispatch invokeinterface
+        // class_4588.method_22912 at runtime -> AbstractMethodError in FluidRenderer.
+        '-keep', 'class xyz.vprolabs.sparrow.tweaks.** { *; }',
 
         '-printmapping', "${buildDir}/obf-mapping-${version}.txt",
     ]
