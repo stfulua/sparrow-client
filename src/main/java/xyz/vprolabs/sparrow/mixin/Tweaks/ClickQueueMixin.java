@@ -6,6 +6,9 @@ import xyz.vprolabs.sparrow.state.ServerSafety;
 import xyz.vprolabs.sparrow.state.ClickQueueState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.EnderPearlItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.WindChargeItem;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,6 +25,13 @@ public class ClickQueueMixin {
     @Unique
     private boolean sparrow_inClickReplay = false;
 
+    @Unique
+    private static boolean sparrow_isUtilityItem(ItemStack stack) {
+        if (stack.isEmpty()) return false;
+        var item = stack.getItem();
+        return item instanceof EnderPearlItem || item instanceof WindChargeItem;
+    }
+
     @Inject(method = "handleInputEvents", at = @At("HEAD"), require = 0)
     private void sparrow_captureClick(CallbackInfo ci) {
         if (!ConfigRegister.clickQueue.get() || ServerSafety.isFeatureDisabled("click-relay")) return;
@@ -29,6 +39,7 @@ public class ClickQueueMixin {
         MinecraftClient client = (MinecraftClient)(Object)this;
         if (client.player == null || client.options == null) return;
         if (client.currentScreen != null) return;
+        if (!sparrow_isUtilityItem(client.player.getMainHandStack())) return;
 
         int cooldown = ((MinecraftClientAccessor) client).getItemUseCooldown();
 
@@ -68,6 +79,7 @@ public class ClickQueueMixin {
         if (!ClickQueueState.shouldReplay()) return;
         if (client.player.isUsingItem()) return;
         if (client.player.getMainHandStack().isEmpty()) return;
+        if (!sparrow_isUtilityItem(client.player.getMainHandStack())) return;
 
         sparrow_inClickReplay = true;
         try {
